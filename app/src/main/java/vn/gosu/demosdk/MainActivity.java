@@ -1,0 +1,300 @@
+package vn.gosu.demosdk;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.appsflyer.AppsFlyerLib;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.gosu.sdk.DialogLoginID.OnLoginListener;
+import com.gosu.sdk.DialogLoginID.OnLogoutListener;
+import com.gosu.sdk.Gosu;
+import com.gosu.sdk.utils.GosuSDKConstant;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import java.util.Calendar;
+
+
+import org.json.JSONObject;
+
+public class MainActivity extends Activity {
+    private Gosu mGosu = null;
+    private ScrollView layoutMain = null;
+    private RelativeLayout layoutIAP = null;
+    private Button btnFloating = null;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // init GOSU SDK
+        Gosu.getSharedInstance().initialize(this, "m318.ButGxBYpmu79Yi");
+        mGosu = Gosu.getSharedInstance();
+
+
+        // init for activity
+        final TextView tv_UID = (TextView) this.findViewById(R.id.txt_uID);
+        tv_UID.setText("UserName: ");
+        layoutMain = (ScrollView) findViewById(R.id.scrollView);
+        layoutMain.setVisibility(View.GONE);
+
+        layoutIAP = (RelativeLayout) findViewById(R.id.layout_iap);
+        layoutIAP.setVisibility(View.GONE);
+
+        // for login SDK
+        final Button btnVaoGame = (Button) findViewById(R.id.btnVaoGame);
+        btnVaoGame.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mGosu.showLogin(new OnLoginListener() {
+
+                    @Override
+                    public void onLoginSuccessful(String UserId, String UserName, String accesstoken) {
+                        btnVaoGame.setVisibility(View.GONE);
+                        layoutMain.setVisibility(View.VISIBLE);
+                        tv_UID.setText("UseName: " + UserName);
+                    }
+
+                    @Override
+                    public void onLoginFailed() {
+                    }
+                });
+            }
+        });
+
+        //for Tracking Character
+        findViewById(R.id.btn_gosutracking).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                String serverID = "123";
+                String roleID = "909484455";
+                String roleName = "BigSDK";
+                mGosu.gosuTrackingAppOpen(serverID, roleID, roleName);
+            }
+        });
+
+        // for payment IAP
+        findViewById(R.id.btn_payment_iap).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                layoutIAP.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // for appsflyer tracking custom
+        findViewById(R.id.btn_appsflyer_tracking_custom).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+
+                    JSONObject jsonContent = new JSONObject();
+                    jsonContent.put("event", "name_event");
+
+                    JSONObject jsonRole = new JSONObject();
+
+                    jsonRole.put("name", "roleName");
+                    jsonRole.put("server", "ServerID");
+
+                    jsonContent.put("params", jsonRole);
+
+                    Log.d("LOG_JSON", jsonContent.toString());
+                    mGosu.trackingStartTrialEventCustomAF(MainActivity.this, jsonContent.toString());
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        // for share image
+        findViewById(R.id.btn_facebook_share).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // File pictures =
+                // Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                // String[] listOfPicture = pictures.list();
+                try {
+                    // String imagename = listOfPicture[0];
+                    // tv_access_token.setText("file://storage/emulated/0/DCIM/Anh
+                    // Chup/XWIPTUP.png");
+                    // mGosu.shareFacebook("file://" + pictures.toString() + "/"
+                    // + imagename + "P_20160619_193456_LL.jpg");
+                    //mGosu.shareFacebook("file:///storage/emulated/0/DCIM/Camera" + "/" + "P_20160619_193456_LL.jpg");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // for invite
+        findViewById(R.id.btn_share_link).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mGosu.InviteFacebook();
+            }
+        });
+
+
+
+        // for logout
+        findViewById(R.id.btn_logout).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mGosu.logOut(new OnLogoutListener() {
+                    public void onLogoutSuccessful() {
+                        btnVaoGame.setVisibility(View.VISIBLE);
+                        layoutMain.setVisibility(View.GONE);
+                    }
+
+                    public void onLogoutFailed() {
+                    }
+                });
+            }
+        });
+
+        //////////// FOR IAP /////////////
+        findViewById(R.id.btn_cancel_iap).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                layoutIAP.setVisibility(View.GONE);
+            }
+        });
+
+        findViewById(R.id.btn_pk1).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                layoutIAP.setVisibility(View.GONE);
+                callIAP(1);
+            }
+        });
+
+        findViewById(R.id.btn_pk2).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                layoutIAP.setVisibility(View.GONE);
+                callIAP(2);
+            }
+        });
+
+        findViewById(R.id.btn_pk3).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                layoutIAP.setVisibility(View.GONE);
+                callIAP(3);
+            }
+        });
+    }
+
+    private void getDeviceToken(){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("FIR_TAG", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d("FIR_TAG", msg);
+                    }
+                });
+    }
+
+    ///////////// CAL IAP ////////////////
+    /**
+     *
+     * sku insert to com.phlmobile.thanlong.properties like above, GOSU SDK will read file and
+     * then split via , and return a vector
+     *
+     * @param type
+     */
+    private void callIAP(int type) {
+        try {
+            String orderid = String.valueOf(Calendar.getInstance().getTimeInMillis()) + "_10095276_2_13_11";
+            String orderInfo = "";
+            String amount = "0";//VNĐ
+            String sku = "";
+            switch (type) {
+                case 1:
+                    sku = GosuSDKConstant.iap_product_ids.get(0);// com.com.phlmobile.thanlong.sdkdemo.p4
+                    amount = "22000";
+                    orderInfo = "Get 99 KNB";
+                    break;
+                case 2:
+                    sku = GosuSDKConstant.iap_product_ids.get(1);// com.com.phlmobile.thanlong.sdkdemo.p5
+                    amount = "44000";
+                    orderInfo = "Get 199 KNB";
+                    break;
+                case 3:
+                    sku = GosuSDKConstant.iap_product_ids.get(2);// com.com.phlmobile.thanlong.sdkdemo.p6
+                    amount = "66000";
+                    orderInfo = "Get 299 KNB";
+                    break;
+            }
+            //Log.e("SKU==", sku);
+
+            orderInfo = URLEncoder.encode(orderInfo, "UTF-8");
+            String extraInfo = "YourContent";
+            String character = "YourCharacter";
+
+            mGosu.payment_iap(this, GosuSDKConstant.username, sku, "s1", orderid, orderInfo, amount, character, extraInfo,
+                    new Gosu.OnPaymentIAPListener(){
+                        public void onPaymentBegin() {
+                            // show iap loading
+                            // ...
+                            mGosu.showLoadingDialog(MainActivity.this, true);
+                        }
+
+                        public void onPaymentSuccessful(String msg) {
+                            // stop iap loading
+                            // ....
+                            mGosu.showLoadingDialog(MainActivity.this, false);
+                            mGosu.showConfirmDialog("Payment Success!", msg);
+                        }
+
+                        public void onPaymentFailed(String msg, int errCode, String iapToken) {
+                            // stop iap loading
+                            // ....
+                            mGosu.showLoadingDialog(MainActivity.this, false);
+                            mGosu.showConfirmDialog("Payment Fail!", msg + " (error_code: " + errCode + ")");
+                        }
+                    });
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mGosu.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+}

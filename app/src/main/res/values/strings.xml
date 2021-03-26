@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DemoSDK</string>
+    <string name="vaogame">Vào Game</string>
+
+    <!-- use for Facebook SDK -->
+    <!--<string name="facebook_app_id">116350609033094</string>
+    <string name="facebook_app_scheme">fb116350609033094</string>
+    <string name="facebook_app_name">BAPVIP ID</string>-->
+    <string name="facebook_app_scheme">fb2428102757466588</string>
+    <string name="facebook_app_name">572</string>
+
+    <string name="facebook_app_id">2428102757466588</string>
+    <string name="fb_login_protocol_scheme">fb2428102757466588</string>
+
+    <!-- use for Firebase SDK -->
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+</resources>

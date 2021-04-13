@@ -147,15 +147,33 @@ public class MainActivity extends Activity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+
             }
         });
 
-        // for invite
+        // for share link
         findViewById(R.id.btn_share_link).setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                mGosu.InviteFacebook();
+
+                mGosu.shareLinkToFacebook("", new FacebookCallback<Sharer.Result>() {
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+
+                    }
+                });
             }
         });
 

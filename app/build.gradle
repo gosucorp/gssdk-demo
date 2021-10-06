@@ -29,7 +29,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     testImplementation 'junit:junit:4.13-rc-2'
     //gosu SDK
-    implementation 'com.github.gosucorp:gssdk:1.0.7'
+    implementation 'com.github.gosucorp:gssdk:1.0.8'
     //for appsflyer
     implementation 'com.appsflyer:af-android-sdk:6.1.4'
     implementation 'com.android.installreferrer:installreferrer:1.1.2'

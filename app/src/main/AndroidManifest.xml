@@ -13,6 +13,8 @@
     <uses-permission android:name="com.android.vending.BILLING" />
     <!-- floating view (optional)-->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- use for appsflyer android 12 -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

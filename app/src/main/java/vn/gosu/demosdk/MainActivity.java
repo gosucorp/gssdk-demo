@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
         mGosu = Gosu.getSharedInstance();
 
 
+
         // init for activity
         final TextView tv_UID = (TextView) this.findViewById(R.id.txt_uID);
         tv_UID.setText("UserName: ");

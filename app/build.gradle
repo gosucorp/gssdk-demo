@@ -3,16 +3,17 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "vn.gosu.demosdk"
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 6
         versionName "6.0.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk.abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -40,7 +41,8 @@ dependencies {
     //for login facebook sdk
     implementation 'com.facebook.android:facebook-android-sdk:latest.release'
     //for in app billing
-    implementation 'com.android.billingclient:billing:3.0.0'
+    implementation 'com.android.billingclient:billing:5.0.0'
+    implementation 'com.google.guava:guava:31.1-android'
     //for firebase Google Analytics & Cloud Message
     implementation platform('com.google.firebase:firebase-bom:26.2.0')
     implementation 'com.google.firebase:firebase-analytics'

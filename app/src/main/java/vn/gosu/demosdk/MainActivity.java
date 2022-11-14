@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         // init GOSU SDK
-        Gosu.getSharedInstance().initialize(this, "m318.ButGxBYpmu79Yi");
+        Gosu.getSharedInstance().initialize(this, "m319.LqmSIpuS5UqkbUPc");
         mGosu = Gosu.getSharedInstance();
 
 

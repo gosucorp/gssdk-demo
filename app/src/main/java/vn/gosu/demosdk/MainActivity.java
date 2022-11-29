@@ -22,8 +22,7 @@ import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.gosu.sdk.DialogLoginID.OnLoginListener;
 import com.gosu.sdk.DialogLoginID.OnLogoutListener;
 import com.gosu.sdk.Gosu;
@@ -57,7 +56,7 @@ public class MainActivity extends Activity {
         Gosu.getSharedInstance().initialize(this, "m319.LqmSIpuS5UqkbUPc");
         mGosu = Gosu.getSharedInstance();
 
-
+        getDeviceToken();
 
         // init for activity
         final TextView tv_UID = (TextView) this.findViewById(R.id.txt_uID);
@@ -135,16 +134,9 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                // File pictures =
-                // Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                // String[] listOfPicture = pictures.list();
+
                 try {
-                    // String imagename = listOfPicture[0];
-                    // tv_access_token.setText("file://storage/emulated/0/DCIM/Anh
-                    // Chup/XWIPTUP.png");
-                    // mGosu.shareFacebook("file://" + pictures.toString() + "/"
-                    // + imagename + "P_20160619_193456_LL.jpg");
-                    //mGosu.shareFacebook("file:///storage/emulated/0/DCIM/Camera" + "/" + "P_20160619_193456_LL.jpg");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -225,21 +217,20 @@ public class MainActivity extends Activity {
     }
 
     private void getDeviceToken(){
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                    public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
-                            Log.w("FIR_TAG", "getInstanceId failed", task.getException());
+                            Log.d("SDK_TAG", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
 
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
+                        // Get new FCM registration token
+                        String token = task.getResult();
 
                         // Log
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d("FIR_TAG", msg);
+                        Log.d("SDK_TAG", "TOKEN FIREBASE:"+token);
                     }
                 });
     }
